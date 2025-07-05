@@ -1,0 +1,2403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>SecureVision Pro - Advanced CCTV Security System</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    <style>
+        :root {
+            --primary-bg: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+            --secondary-bg: rgba(15, 23, 42, 0.95);
+            --card-bg: rgba(30, 41, 59, 0.8);
+            --accent-color: #3b82f6;
+            --accent-gradient: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --border-color: rgba(148, 163, 184, 0.2);
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glow-color: rgba(59, 130, 246, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--primary-bg);
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Glass morphism effect */
+        .glass {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-color);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Enhanced navbar */
+        .navbar {
+            background: var(--secondary-bg);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .navbar-brand {
+            font-size: 1.75rem;
+            font-weight: 800;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        #searchRecordings::placeholder {
+  color: white;
+  opacity: 1; /* Ensures full opacity across browsers */
+}
+
+        .brand-icon {
+            background: var(--accent-gradient);
+            padding: 0.5rem;
+            border-radius: 12px;
+            color: white;
+            font-size: 1.25rem;
+        }
+
+        .system-status {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.5rem 1rem;
+            background: var(--glass-bg);
+            border-radius: 50px;
+            border: 1px solid var(--border-color);
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.1); }
+        }
+
+        /* Dashboard header */
+        .dashboard-header {
+            text-align: center;
+            margin: 3rem 0;
+            position: relative;
+        }
+
+        .dashboard-title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6, #06b6d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+            position: relative;
+        }
+
+        .dashboard-subtitle {
+            color: var(--text-secondary);
+            font-size: 1.25rem;
+            font-weight: 400;
+            letter-spacing: 0.5px;
+        }
+
+        /* Enhanced stats panel */
+        .stats-panel {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--accent-gradient);
+            transform: scaleX(0);
+            transition: transform 0.4s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--accent-color);
+            box-shadow: 0 20px 40px rgba(59, 130, 246, 0.15);
+        }
+        
+  #cameraFilter {
+    color: white;
+    background-color: #2c3e50;
+    border: 1px solid #1abc9c;
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 16px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    transition: border 0.3s ease, box-shadow 0.3s ease;
+    outline: none;
+  }
+
+  #cameraFilter:hover,
+  #cameraFilter:focus {
+    border-color: #16a085;
+    box-shadow: 0 0 8px rgba(26, 188, 156, 0.5);
+  }
+
+  #cameraFilter option {
+    background-color: #34495e;
+    color: white;
+  }
+
+
+
+        .stat-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .stat-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            padding: 1rem;
+            border-radius: 16px;
+            display: inline-block;
+            background: var(--glass-bg);
+            border: 1px solid var(--border-color);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Enhanced control panel */
+        .control-panel {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 2.5rem;
+            margin-bottom: 3rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .control-panel h5 {
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 2rem;
+            font-weight: 700;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        /* Enhanced camera grid */
+        .camera-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .camera-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            position: relative;
+            min-height: 500px;
+        }
+
+        .camera-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, transparent, rgba(59, 130, 246, 0.05));
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            pointer-events: none;
+        }
+
+        .camera-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 25px 50px rgba(59, 130, 246, 0.2);
+            border-color: var(--accent-color);
+        }
+
+        .camera-card:hover::before {
+            opacity: 1;
+        }
+
+        .camera-header {
+            padding: 1.5rem 2rem;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(139, 92, 246, 0.1));
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .camera-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .camera-status {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .status-badge {
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .status-online {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--success-color);
+            border: 1px solid var(--success-color);
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
+        }
+
+        .status-offline {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--danger-color);
+            border: 1px solid var(--danger-color);
+        }
+
+        .camera-feed-container {
+            position: relative;
+            height: 280px;
+            overflow: hidden;
+            background: linear-gradient(135deg, #1e293b, #334155);
+        }
+
+        .camera-feed {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: all 0.4s ease;
+        }
+
+        .camera-feed:hover {
+            transform: scale(1.05);
+        }
+
+        .camera-overlay {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            right: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            pointer-events: none;
+        }
+
+        .overlay-item {
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 0.75rem 1rem;
+            border-radius: 12px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .recording-indicator {
+            color: var(--danger-color);
+            animation: recordingPulse 1s infinite;
+        }
+
+        @keyframes recordingPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        .motion-alert {
+            color: var(--warning-color);
+            animation: motionAlert 0.5s infinite;
+        }
+
+        @keyframes motionAlert {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .timestamp {
+            color: var(--success-color);
+        }
+
+        .camera-controls {
+            padding: 1.5rem 2rem;
+            background: rgba(15, 23, 42, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        /* Enhanced buttons */
+        .btn-modern {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 0.875rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-modern::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: var(--accent-gradient);
+            transition: left 0.3s ease;
+            z-index: -1;
+        }
+
+        .btn-modern:hover {
+            color: white;
+            border-color: var(--accent-color);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3);
+        }
+
+        .btn-modern:hover::before {
+            left: 0;
+        }
+
+        .btn-modern.recording {
+            background: rgba(239, 68, 68, 0.2);
+            border-color: var(--danger-color);
+            color: var(--danger-color);
+        }
+
+        .btn-modern.recording:hover {
+            background: var(--danger-color);
+            color: white;
+        }
+
+        /* Enhanced modals */
+        .modal-dark {
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+        }
+
+        .modal-dark .modal-content {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-dark .modal-header {
+            border-bottom: 1px solid var(--border-color);
+            padding: 2rem 2rem 1.5rem;
+        }
+
+        .modal-dark .modal-body {
+            padding: 1.5rem 2rem;
+        }
+
+        .modal-dark .modal-footer {
+            border-top: 1px solid var(--border-color);
+            padding: 1.5rem 2rem 2rem;
+        }
+
+        .modal-dark .btn-close {
+            filter: invert(1);
+            opacity: 0.8;
+        }
+
+        .modal-dark .btn-close:hover {
+            opacity: 1;
+        }
+
+        /* Enhanced recordings modal styles */
+        .recordings-modal .modal-content {
+            background: var(--card-bg);
+            backdrop-filter: blur(30px);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.6);
+        }
+
+        .recordings-header {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(139, 92, 246, 0.1));
+            border-bottom: 1px solid var(--border-color);
+            padding: 2rem;
+            border-radius: 24px 24px 0 0;
+        }
+
+        .recordings-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .filter-buttons {
+            display: flex;
+            gap: 0.5rem;
+            margin-left: auto;
+        }
+
+        .filter-btn {
+            background: var(--glass-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 0.5rem 1rem;
+            border-radius: 12px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .filter-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: var(--accent-gradient);
+            transition: left 0.3s ease;
+            z-index: -1;
+        }
+
+        .filter-btn:hover,
+        .filter-btn.active {
+            color: white;
+            border-color: var(--accent-color);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(59, 130, 246, 0.3);
+        }
+
+        .filter-btn:hover::before,
+        .filter-btn.active::before {
+            left: 0;
+        }
+
+        .recordings-filters {
+            background: rgba(15, 23, 42, 0.5);
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .filter-input {
+            background: var(--glass-bg) !important;
+            border: 1px solid var(--border-color) !important;
+            border-radius: 12px !important;
+            color: var(--text-primary) !important;
+            padding: 0.75rem 1rem !important;
+            transition: all 0.3s ease !important;
+            font-size: 0.875rem !important;
+        }
+
+        .filter-input:focus {
+            border-color: var(--accent-color) !important;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15) !important;
+            transform: translateY(-1px) !important;
+        }
+
+        .filter-input::placeholder {
+            color: var(--text-secondary) !important;
+            opacity: 0.8 !important;
+        }
+
+        .recordings-content {
+            padding: 0;
+            max-height: 60vh;
+            overflow-y: auto;
+        }
+
+        .recordings-table {
+            margin: 0;
+            background: transparent;
+        }
+
+        .recordings-table thead {
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .recordings-table th {
+            border: none;
+            padding: 1.25rem 1.5rem;
+            font-weight: 600;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-primary);
+            background: transparent;
+        }
+
+        .recordings-table td {
+            border: none;
+            padding: 1rem 1.5rem;
+            vertical-align: middle;
+            background: transparent;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+        }
+
+        .recordings-table tr {
+            transition: all 0.3s ease;
+        }
+
+        .recordings-table tr:hover {
+            background: rgba(59, 130, 246, 0.05);
+            transform: translateX(5px);
+        }
+
+        .recording-thumbnail {
+            width: 80px;
+            height: 60px;
+            border-radius: 8px;
+            object-fit: cover;
+            border: 2px solid var(--border-color);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .recording-thumbnail:hover {
+            transform: scale(1.1);
+            border-color: var(--accent-color);
+            box-shadow: 0 5px 15px rgba(59, 130, 246, 0.3);
+        }
+
+        .recording-filename {
+            font-weight: 600;
+            color: var(--accent-color);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            font-size: 0.875rem;
+        }
+
+        .recording-filename:hover {
+            color: var(--success-color);
+            text-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+        }
+
+        .recording-badge {
+            padding: 0.375rem 0.75rem;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .size-badge {
+            background: rgba(139, 92, 246, 0.2);
+            color: #a78bfa;
+            border: 1px solid rgba(139, 92, 246, 0.3);
+        }
+
+        .camera-badge {
+            background: rgba(6, 182, 212, 0.2);
+            color: #22d3ee;
+            border: 1px solid rgba(6, 182, 212, 0.3);
+        }
+
+        .duration-badge {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--success-color);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .recording-actions {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+        }
+
+        .action-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background: var(--glass-bg);
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .action-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--accent-gradient);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(59, 130, 246, 0.3);
+        }
+
+        .action-btn:hover::before {
+            opacity: 1;
+        }
+
+        .action-btn i {
+            position: relative;
+            z-index: 1;
+            font-size: 0.875rem;
+        }
+
+        .action-btn.download:hover {
+            border-color: var(--success-color);
+            box-shadow: 0 5px 15px rgba(16, 185, 129, 0.3);
+        }
+
+        .action-btn.download::before {
+            background: var(--success-color);
+        }
+
+        .action-btn.info:hover {
+            border-color: var(--accent-color);
+        }
+
+        .action-btn.delete:hover {
+            border-color: var(--danger-color);
+            box-shadow: 0 5px 15px rgba(239, 68, 68, 0.3);
+        }
+
+        .action-btn.delete::before {
+            background: var(--danger-color);
+        }
+
+        .recordings-footer {
+            background: rgba(15, 23, 42, 0.5);
+            padding: 1.5rem 2rem;
+            border-radius: 0 0 24px 24px;
+            text-align: center;
+        }
+
+        .recordings-count {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .no-recordings {
+            text-align: center;
+            padding: 3rem 2rem;
+            color: var(--text-secondary);
+        }
+
+        .no-recordings i {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .no-recordings h4 {
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .loading-recordings {
+            text-align: center;
+            padding: 3rem 2rem;
+            color: var(--accent-color);
+        }
+
+        .loading-recordings i {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Custom scrollbar for recordings content */
+        .recordings-content::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .recordings-content::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.5);
+        }
+
+        .recordings-content::-webkit-scrollbar-thumb {
+            background: var(--accent-color);
+            border-radius: 4px;
+        }
+
+        .recordings-content::-webkit-scrollbar-thumb:hover {
+            background: #2563eb;
+        }
+        
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .camera-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            
+            .camera-feed-container {
+                height: 220px;
+            }
+            
+            .dashboard-title {
+                font-size: 2.5rem;
+            }
+            
+            .stats-panel {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1rem;
+            }
+            
+            .control-panel {
+                padding: 1.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats-panel {
+                grid-template-columns: 1fr;
+            }
+            
+            .btn-group {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            
+            .btn-modern {
+                padding: 0.5rem 1rem;
+                font-size: 0.75rem;
+            }
+        }
+
+        /* Loading animations */
+        .fade-in {
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Notification styles */
+        .notification-alert {
+            border-radius: 16px !important;
+            backdrop-filter: blur(20px) !important;
+            border: 1px solid var(--border-color) !important;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3) !important;
+        }
+
+        .alert-success {
+            background: rgba(16, 185, 129, 0.1) !important;
+            color: var(--success-color) !important;
+            border-color: var(--success-color) !important;
+        }
+
+        .alert-danger {
+            background: rgba(239, 68, 68, 0.1) !important;
+            color: var(--danger-color) !important;
+            border-color: var(--danger-color) !important;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <div class="brand-icon">
+                    <i class="fas fa-shield-halved"></i>
+                </div>
+                SecureVision Pro
+            </a>
+            <div class="system-status">
+                <span id="systemStatus">
+                    <i class="fas fa-circle text-success pulse"></i>
+                    <span class="text-success fw-semibold">System Online</span>
+                </span>
+            </div>
+            <button class="btn btn-modern ms-auto" onclick="toggleFullscreen()" title="Toggle Fullscreen">
+                <i class="fas fa-expand"></i> Fullscreen
+            </button>
+        </div>
+    </nav>
+
+    <div class="container py-4">
+        <!-- Dashboard Header -->
+        <div class="dashboard-header fade-in">
+            <h1 class="dashboard-title">
+                <i class="fas fa-video"></i> Security Dashboard
+            </h1>
+            <p class="dashboard-subtitle">Professional surveillance system with real-time monitoring</p>
+        </div>
+
+        <!-- Statistics Panel -->
+        <div class="stats-panel fade-in">
+            <div class="stat-card">
+                <div class="stat-icon text-primary">
+                    <i class="fas fa-video"></i>
+                </div>
+                <div class="stat-value" id="totalCameras">{{ cameras|length }}</div>
+                <div class="stat-label">Total Cameras</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon text-success">
+                    <i class="fas fa-wifi"></i>
+                </div>
+                <div class="stat-value" id="onlineCameras">0</div>
+                <div class="stat-label">Online</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon text-warning">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <div class="stat-value" id="motionAlerts">0</div>
+                <div class="stat-label">Motion Alerts</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon text-danger">
+                    <i class="fas fa-record-vinyl"></i>
+                </div>
+                <div class="stat-value" id="recordingCameras">0</div>
+                <div class="stat-label">Recording</div>
+            </div>
+        </div>
+
+        <!-- Control Panel -->
+        <div class="control-panel fade-in">
+            <h5><i class="fas fa-sliders-h"></i> System Controls</h5>
+            <div class="row">
+                <div class="col-md-3 mb-3">
+                    <button class="btn btn-modern w-100" onclick="showAddCameraModal()">
+                        <i class="fas fa-plus-circle"></i> Add Camera
+                    </button>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <button class="btn btn-modern w-100" onclick="toggleAllRecording()">
+                        <i class="fas fa-record-vinyl"></i> Record All
+                    </button>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <button class="btn btn-modern w-100" onclick="refreshAllCameras()">
+                        <i class="fas fa-sync-alt"></i> Refresh All
+                    </button>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <button class="btn btn-modern w-100" onclick="showRecordings()">
+                        <i class="fas fa-folder-open"></i> View Recordings
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Camera Grid -->
+        <div class="camera-grid fade-in" id="cameraGrid">
+            {% if cameras %}
+                {% for cam_name in cameras %}
+                <div class="camera-card" id="camera-{{ cam_name }}">
+                    <div class="camera-header">
+                        <h4 class="camera-title">
+                            <i class="fas fa-video"></i> {{ cam_name|title }}
+                        </h4>
+                        <div class="camera-status">
+                            <span class="status-badge status-offline" id="status-{{ cam_name }}">
+                                <i class="fas fa-circle"></i> Offline
+                            </span>
+                            <button class="btn btn-sm btn-outline-danger ms-2" onclick="confirmRemoveCamera('{{ cam_name }}')" title="Remove Camera">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="camera-feed-container">
+                        <img src="/video_feed/{{ cam_name }}" alt="{{ cam_name }} feed" class="camera-feed" 
+                             onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjMWUyOTNiIi8+Cjx0ZXh0IHg9IjIwMCIgeT0iMTMwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjZWY0NDQ0IiBmb250LXNpemU9IjE4IiBmb250LWZhbWlseT0iSW50ZXIiIGZvbnQtd2VpZ2h0PSI2MDAiPkNhbWVyYSBPZmZsaW5lPC90ZXh0Pjx0ZXh0IHg9IjIwMCIgeT0iMTcwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjOTRhM2I4IiBmb250LXNpemU9IjEyIiBmb250LWZhbWlseT0iSW50ZXIiPkNoZWNrIGNvbm5lY3Rpb24gYW5kIHJlZnJlc2g8L3RleHQ+PC9zdmc+'" />
+                        
+                        <div class="camera-overlay">
+                            <div class="overlay-item timestamp" id="timestamp-{{ cam_name }}">
+                                <i class="fas fa-clock"></i> <span id="time-{{ cam_name }}">--:--:--</span>
+                            </div>
+                            <div>
+                                <div class="overlay-item recording-indicator" id="recording-{{ cam_name }}" style="display: none;">
+                                    <i class="fas fa-circle"></i> REC
+                                </div>
+                                <div class="overlay-item motion-alert" id="motion-{{ cam_name }}" style="display: none;">
+                                    <i class="fas fa-exclamation-triangle"></i> MOTION
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="camera-controls">
+                        <div class="btn-group">
+                            <button class="btn-modern" onclick="toggleRecording('{{ cam_name }}')">
+                                <i class="fas fa-record-vinyl"></i> Record
+                            </button>
+                            <button class="btn-modern" onclick="refreshCamera('{{ cam_name }}')">
+                                <i class="fas fa-sync-alt"></i> Refresh
+                            </button>
+                            <button class="btn-modern" onclick="fullscreenCamera('{{ cam_name }}')">
+                                <i class="fas fa-expand"></i> Fullscreen
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="col-12 text-center" id="noCamerasMessage">
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle fa-3x mb-3"></i>
+                        <h4>No cameras configured</h4>
+                        <p class="mb-3">Get started by adding your first security camera to the system</p>
+                        <div class="center-btn">
+  <button class="btn btn-dark" onclick="showAddCameraModal()">
+    <i class="fas fa-plus-circle"></i> Add Your First Camera
+  </button>
+</div>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Add Camera Modal -->
+    <div class="modal fade modal-dark" id="addCameraModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-plus-circle text-success"></i> Add New Camera
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addCameraForm">
+                        <div class="mb-3">
+                            <label for="cameraName" class="form-label">
+                                <i class="fas fa-tag"></i> Camera Name
+                            </label>
+                            <input type="text" class="form-control bg-dark text-light border-secondary" 
+                                   id="cameraName" placeholder="e.g., Front Door, Living Room" required>
+                            <div class="form-text">Give your camera a descriptive name</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="cameraUrl" class="form-label">
+                                <i class="fas fa-link"></i> Camera URL
+                            </label>
+                            <input type="url" class="form-control bg-dark text-light border-secondary" 
+                                   id="cameraUrl" placeholder="http://192.168.1.100:8080/video" required>
+                            <div class="form-text">Enter the IP camera stream URL</div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">
+                                <i class="fas fa-info-circle"></i> Common URL Formats
+                            </label>
+                            <div class="list-group">
+                                <div class="list-group-item bg-dark text-light border-secondary">
+                                    <small><strong>DroidCam:</strong> http://IP:4747/video</small>
+                                </div>
+                                <div class="list-group-item bg-dark text-light border-secondary">
+                                    <small><strong>IP Webcam:</strong> http://IP:8080/video</small>
+                                </div>
+                                <div class="list-group-item bg-dark text-light border-secondary">
+                                    <small><strong>Generic RTSP:</strong> rtsp://IP:554/stream</small>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-success" onclick="addCamera()">
+                        <i class="fas fa-plus"></i> Add Camera
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirm Remove Camera Modal -->
+    <div class="modal fade modal-dark" id="confirmRemoveModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title text-danger">
+                        <i class="fas fa-trash"></i> Confirm Removal
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to remove the camera <strong id="cameraToRemove"></strong>?</p>
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        This action cannot be undone. Any ongoing recordings will be stopped.
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger" onclick="executeRemoveCamera()">
+                        <i class="fas fa-trash"></i> Remove Camera
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Enhanced Recordings Modal -->
+    <div class="modal fade modal-dark recordings-modal" id="recordingsModal" tabindex="-1">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="recordings-header">
+                    <div class="d-flex align-items-center justify-content-between w-100">
+                        <h5 class="recordings-title">
+                            <i class="fas fa-folder-open"></i> Recordings Archive
+                        </h5>
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="filter-buttons">
+                                <button class="filter-btn active" onclick="filterRecordings('all'); setActiveFilter(this)">All</button>
+                                <button class="filter-btn" onclick="filterRecordings('today'); setActiveFilter(this)">Today</button>
+                                <button class="filter-btn" onclick="filterRecordings('week'); setActiveFilter(this)">This Week</button>
+                                <button class="filter-btn" onclick="filterRecordings('month'); setActiveFilter(this)">This Month</button>
+                            </div>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                    </div>
+                </div>
+                <div class="recordings-filters">
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <input type="text" class="form-control filter-input" id="searchRecordings" placeholder="🔍 Search recordings...">
+                        </div>
+                        <div class="col-md-4">
+                            <select class="form-control filter-input" id="cameraFilter">
+                                <option value="">📹 All Cameras</option>
+                                {% for cam_name in cameras %}
+                                <option value="{{ cam_name }}">{{ cam_name|title }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <input type="date" class="form-control filter-input" id="dateFilter" title="Filter by date">
+                        </div>
+                    </div>
+                </div>
+                <div id="recordingsList">
+                    <div class="loading-recordings">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <div style="margin-top: 1rem; font-weight: 600;">Loading recordings...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="py-4 mt-5" style="background-color: #0a0f2c; color: #aab6ff;">
+  <div class="container text-center">
+    <h5 class="fw-bold mb-2" style="color: #5bc0de;">SecureVision Pro</h5>
+    <p class="mb-1" style="font-size: 0.95rem;">Advanced CCTV Security System</p>
+    <hr class="border-secondary w-25 mx-auto mb-3 opacity-50" />
+    <p class="mb-0" style="font-size: 0.9rem; color: #ffffffcc;">
+  &copy; {{ datetime.now().year }} <span class="fw-semibold">SecureVision Pro</span>. All rights reserved.
+</p>
+
+  </div>
+</footer>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        class CCTVManager {
+            constructor() {
+                this.recordingStates = {};
+                this.init();
+            }
+
+            init() {
+                this.updateTime();
+                this.loadCameraStatus();
+                this.checkMotionAlerts();
+                
+                // Update intervals
+                setInterval(() => this.updateTime(), 1000);
+                setInterval(() => this.loadCameraStatus(), 5000);
+                setInterval(() => this.checkMotionAlerts(), 2000);
+            }
+
+            updateTime() {
+                const now = new Date();
+                const timeStr = now.toLocaleTimeString();
+                document.querySelectorAll('[id^="time-"]').forEach(el => {
+                    el.textContent = timeStr;
+                });
+            }
+
+            async loadCameraStatus() {
+                try {
+                    const response = await fetch('/api/camera_status');
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    const status = await response.json();
+                    
+                    let onlineCount = 0;
+                    let offlineCount = 0;
+                    
+                    // Get all camera names from the page
+                    const allCameras = Array.from(document.querySelectorAll('[id^="camera-"]')).map(el => 
+                        el.id.replace('camera-', '')
+                    );
+                    
+                    allCameras.forEach(camera => {
+                        const statusEl = document.getElementById(`status-${camera}`);
+                        if (statusEl) {
+                            // Check if camera has status info and is online
+                            const cameraInfo = status[camera];
+                            const isOnline = cameraInfo && cameraInfo.status === 'online';
+                            
+                            statusEl.className = `status-badge ${isOnline ? 'status-online' : 'status-offline'}`;
+                            statusEl.innerHTML = `<i class="fas fa-circle"></i> ${isOnline ? 'Online' : 'Offline'}`;
+                            
+                            if (isOnline) {
+                                onlineCount++;
+                            } else {
+                                offlineCount++;
+                            }
+                        }
+                    });
+                    
+                    // Update statistics display
+                    document.getElementById('onlineCameras').textContent = onlineCount;
+                    
+                    // Update system status based on online cameras
+                    const systemStatus = document.getElementById('systemStatus');
+                    if (onlineCount > 0) {
+                        systemStatus.innerHTML = '<i class="fas fa-circle text-success pulse"></i> <span class="text-success">System Online</span>';
+                    } else if (offlineCount > 0) {
+                        systemStatus.innerHTML = '<i class="fas fa-circle text-danger pulse"></i> <span class="text-danger">All Cameras Offline</span>';
+                    } else {
+                        systemStatus.innerHTML = '<i class="fas fa-circle text-warning pulse"></i> <span class="text-warning">No Cameras Found</span>';
+                    }
+                    
+                    console.log(`Camera Status - Online: ${onlineCount}, Offline: ${offlineCount}`);
+                    
+                } catch (error) {
+                    console.error('Error loading camera status:', error);
+                    // Update system status to show error
+                    const systemStatus = document.getElementById('systemStatus');
+                    systemStatus.innerHTML = '<i class="fas fa-circle text-warning pulse"></i> <span class="text-warning">Connection Error</span>';
+                    
+                    // Set all cameras to offline when there's an error
+                    document.querySelectorAll('[id^="status-"]').forEach(statusEl => {
+                        statusEl.className = 'status-badge status-offline';
+                        statusEl.innerHTML = '<i class="fas fa-circle"></i> Offline';
+                    });
+                    document.getElementById('onlineCameras').textContent = '0';
+                }
+            }
+
+            async checkMotionAlerts() {
+                try {
+                    const response = await fetch('/api/motion_alerts');
+                    const alerts = await response.json();
+                    
+                    let alertCount = Object.keys(alerts).length;
+                    Object.entries(alerts).forEach(([camera, alert]) => {
+                        const motionEl = document.getElementById(`motion-${camera}`);
+                        if (motionEl) {
+                            motionEl.style.display = 'block';
+                            setTimeout(() => {
+                                motionEl.style.display = 'none';
+                            }, 3000);
+                        }
+                    });
+                    
+                    document.getElementById('motionAlerts').textContent = alertCount;
+                } catch (error) {
+                    console.error('Error checking motion alerts:', error);
+                }
+            }
+
+            async toggleRecording(camera) {
+                const action = this.recordingStates[camera] ? 'stop' : 'start';
+                const button = document.querySelector(`#camera-${camera} .btn-modern`);
+                
+                try {
+                    // Update button state immediately for better UX
+                    if (button) {
+                        button.disabled = true;
+                        button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+                    }
+                    
+                    console.log(`Attempting to ${action} recording for camera: ${camera}`);
+                    
+                    const response = await fetch(`/api/recording/${camera}/${action}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
+                        }
+                    });
+                    
+                    console.log(`Response status: ${response.status}`);
+                    
+                    if (!response.ok) {
+                        const errorText = await response.text();
+                        console.error(`HTTP error! status: ${response.status}, message: ${errorText}`);
+                        throw new Error(`HTTP ${response.status}: ${errorText}`);
+                    }
+                    
+                    const result = await response.json();
+                    console.log('Recording API response:', result);
+                    
+                    // Update recording state
+                    this.recordingStates[camera] = result.recording;
+                    
+                    // Update recording indicator overlay
+                    const recordingEl = document.getElementById(`recording-${camera}`);
+                    if (recordingEl) {
+                        recordingEl.style.display = result.recording ? 'block' : 'none';
+                    }
+                    
+                    // Update button appearance
+                    if (button) {
+                        button.className = `btn-modern ${result.recording ? 'recording' : ''}`;
+                        button.innerHTML = `<i class="fas fa-record-vinyl"></i> ${result.recording ? 'Stop' : 'Record'}`;
+                    }
+                    
+                    // Update recording count in stats
+                    const recordingCount = Object.values(this.recordingStates).filter(Boolean).length;
+                    document.getElementById('recordingCameras').textContent = recordingCount;
+                    
+                    // Show success notification
+                    this.showNotification(
+                        `Recording ${result.recording ? 'started' : 'stopped'} for ${camera}`, 
+                        'success'
+                    );
+                    
+                } catch (error) {
+                    console.error('Error toggling recording:', error);
+                    this.showNotification(
+                        `Failed to ${action} recording for ${camera}: ${error.message}`, 
+                        'error'
+                    );
+                } finally {
+                    // Reset button state
+                    if (button) {
+                        button.disabled = false;
+                        // If recording failed, reset button text
+                        if (!this.recordingStates[camera]) {
+                            button.innerHTML = '<i class="fas fa-record-vinyl"></i> Record';
+                            button.className = 'btn-modern';
+                        }
+                    }
+                }
+            }
+
+            refreshCamera(camera) {
+                const img = document.querySelector(`#camera-${camera} .camera-feed`);
+                const button = document.querySelector(`#camera-${camera} .btn-modern:nth-child(2)`);
+                
+                if (img && button) {
+                    // Show loading state
+                    button.disabled = true;
+                    button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Refreshing...';
+                    
+                    // Add timestamp to force refresh
+                    const timestamp = Date.now();
+                    const newSrc = `/video_feed/${camera}?t=${timestamp}`;
+                    
+                    // Handle image load events
+                    img.onload = () => {
+                        button.disabled = false;
+                        button.innerHTML = '<i class="fas fa-sync-alt"></i> Refresh';
+                        this.showNotification(`${camera} camera refreshed`, 'success');
+                    };
+                    
+                    img.onerror = () => {
+                        button.disabled = false;
+                        button.innerHTML = '<i class="fas fa-sync-alt"></i> Refresh';
+                        this.showNotification(`Failed to refresh ${camera} camera`, 'error');
+                    };
+                    
+                    // Set new source
+                    img.src = newSrc;
+                    
+                    // Timeout fallback
+                    setTimeout(() => {
+                        if (button.disabled) {
+                            button.disabled = false;
+                            button.innerHTML = '<i class="fas fa-sync-alt"></i> Refresh';
+                        }
+                    }, 5000);
+                }
+            }
+
+            fullscreenCamera(camera) {
+                const cameraFeedContainer = document.querySelector(`#camera-${camera} .camera-feed-container`);
+                const button = document.querySelector(`#camera-${camera} .btn-modern:nth-child(3)`);
+                
+                if (cameraFeedContainer && button) {
+                    try {
+                        if (document.fullscreenElement) {
+                            document.exitFullscreen().then(() => {
+                                button.innerHTML = '<i class="fas fa-expand"></i> Fullscreen';
+                                this.showNotification('Exited fullscreen', 'success');
+                            }).catch(err => {
+                                console.error('Error exiting fullscreen:', err);
+                                this.showNotification('Failed to exit fullscreen', 'error');
+                            });
+                        } else {
+                            // Request fullscreen on the camera feed container for better experience
+                            cameraFeedContainer.requestFullscreen().then(() => {
+                                button.innerHTML = '<i class="fas fa-compress"></i> Exit';
+                                this.showNotification(`${camera} camera in fullscreen`, 'success');
+                            }).catch(err => {
+                                console.error('Error entering fullscreen:', err);
+                                // Fallback to document fullscreen
+                                try {
+                                    document.documentElement.requestFullscreen().then(() => {
+                                        button.innerHTML = '<i class="fas fa-compress"></i> Exit';
+                                        this.showNotification(`${camera} camera in fullscreen`, 'success');
+                                    });
+                                } catch (fallbackError) {
+                                    this.showNotification('Failed to enter fullscreen', 'error');
+                                }
+                            });
+                        }
+                    } catch (error) {
+                        console.error('Fullscreen error:', error);
+                        this.showNotification('Fullscreen not supported', 'error');
+                    }
+                }
+            }
+
+            toggleAllRecording() {
+                const allCameras = Array.from(document.querySelectorAll('[id^="camera-"]')).map(el => 
+                    el.id.replace('camera-', '')
+                );
+                
+                let processedCount = 0;
+                const totalCameras = allCameras.length;
+                
+                allCameras.forEach(async (camera) => {
+                    try {
+                        await this.toggleRecording(camera);
+                        processedCount++;
+                    } catch (error) {
+                        console.error(`Failed to toggle recording for ${camera}:`, error);
+                        processedCount++;
+                    }
+                    
+                    // Show notification when all cameras are processed
+                    if (processedCount === totalCameras) {
+                        const recordingCount = Object.values(this.recordingStates).filter(Boolean).length;
+                        this.showNotification(`Recording toggled - ${recordingCount} cameras now recording`, 'success');
+                    }
+                });
+            }
+
+            refreshAllCameras() {
+                const allCameras = Array.from(document.querySelectorAll('.camera-feed')).map(img => 
+                    img.alt.split(' ')[0]
+                );
+                
+                allCameras.forEach(camera => {
+                    this.refreshCamera(camera);
+                });
+                
+                this.showNotification(`Refreshing ${allCameras.length} cameras`, 'success');
+            }
+
+            toggleFullscreen() {
+                try {
+                    if (document.fullscreenElement) {
+                        document.exitFullscreen().then(() => {
+                            this.showNotification('Exited fullscreen mode', 'success');
+                        });
+                    } else {
+                        document.documentElement.requestFullscreen().then(() => {
+                            this.showNotification('Entered fullscreen mode', 'success');
+                        });
+                    }
+                } catch (error) {
+                    this.showNotification('Fullscreen not supported', 'error');
+                }
+            }
+
+            generateRecordingsTable(recordings) {
+                return `
+                    <div class="recordings-content">
+                        <table class="table recordings-table">
+                            <thead>
+                                <tr>
+                                    <th><i class="fas fa-image"></i> Preview</th>
+                                    <th><i class="fas fa-file-video"></i> File</th>
+                                    <th><i class="fas fa-hdd"></i> Size</th>
+                                    <th><i class="fas fa-calendar"></i> Date</th>
+                                    <th><i class="fas fa-camera"></i> Camera</th>
+                                    <th><i class="fas fa-clock"></i> Duration</th>
+                                    <th><i class="fas fa-cog"></i> Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${recordings.map(rec => `
+                                    <tr data-filename="${rec.filename}" data-camera="${rec.camera}" data-date="${rec.created}">
+                                        <td>
+                                            <img src="${rec.thumbnail}" 
+                                                 alt="Recording thumbnail" 
+                                                 class="recording-thumbnail" 
+                                                 onclick="playVideo('${rec.filename}')"
+                                                 title="Click to play video" />
+                                        </td>
+                                        <td>
+                                            <div class="recording-filename" onclick="playVideo('${rec.filename}')" title="Click to play">
+                                                ${rec.filename}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span class="recording-badge size-badge">${this.formatFileSize(rec.size)}</span>
+                                        </td>
+                                        <td>
+                                            <div style="font-size: 0.875rem; color: var(--text-secondary);">
+                                                ${new Date(rec.created).toLocaleString()}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span class="recording-badge camera-badge">${rec.camera.toUpperCase()}</span>
+                                        </td>
+                                        <td>
+                                            <span class="recording-badge duration-badge">${rec.duration}</span>
+                                        </td>
+                                        <td>
+                                            <div class="recording-actions">
+                                                <button class="action-btn download" onclick="downloadRecording('${rec.filename}')" title="Download">
+                                                    <i class="fas fa-download"></i>
+                                                </button>
+                                                <button class="action-btn info" onclick="getRecordingInfo('${rec.filename}')" title="Information">
+                                                    <i class="fas fa-info-circle"></i>
+                                                </button>
+                                                <button class="action-btn delete" onclick="deleteRecording('${rec.filename}')" title="Delete">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="recordings-footer">
+                        <div class="recordings-count">
+                            <i class="fas fa-video"></i> Total recordings: ${recordings.length}
+                        </div>
+                    </div>
+                `;
+            }
+
+            async showRecordings() {
+                const recordingsList = document.getElementById('recordingsList');
+                recordingsList.innerHTML = `
+                    <div class="loading-recordings">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <div style="margin-top: 1rem; font-weight: 600;">Loading recordings...</div>
+                    </div>
+                `;
+                
+                try {
+                    const response = await fetch('/api/recordings');
+                    const recordings = await response.json();
+                    
+                    if (recordings.length === 0) {
+                        recordingsList.innerHTML = `
+                            <div class="no-recordings">
+                                <i class="fas fa-video-slash"></i>
+                                <h4>No recordings found</h4>
+                                <p>Start recording from your cameras to see recordings here</p>
+                            </div>
+                        `;
+                    } else {
+                        recordingsList.innerHTML = this.generateRecordingsTable(recordings);
+                        this.setupRecordingSearch();
+                    }
+                    
+                    const modal = new bootstrap.Modal(document.getElementById('recordingsModal'));
+                    modal.show();
+                } catch (error) {
+                    console.error('Error loading recordings:', error);
+                    recordingsList.innerHTML = `
+                        <div class="no-recordings">
+                            <i class="fas fa-exclamation-triangle" style="color: var(--danger-color);"></i>
+                            <h4>Error loading recordings</h4>
+                            <p>Please check your connection and try again</p>
+                        </div>
+                    `;
+                }
+            }
+
+            async deleteRecording(filename) {
+                const modalHtml = `
+                    <div class="modal fade" id="deleteConfirmationModal" tabindex="-1">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title text-danger">
+                                        <i class="fas fa-trash"></i> Confirm Delete
+                                    </h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                </div>
+                                <div class="modal-body">
+                                    Are you sure you want to delete the recording <strong>${filename}</strong>?<br>
+                                    <small class="text-muted">This action cannot be undone.</small>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                    <button type="button" class="btn btn-danger" id="confirmDeleteButton">
+                                        <i class="fas fa-trash"></i> Delete
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                // Remove existing modal if any
+                const existingModal = document.getElementById('deleteConfirmationModal');
+                if (existingModal) existingModal.remove();
+
+                // Add new modal to the DOM
+                document.body.insertAdjacentHTML('beforeend', modalHtml);
+
+                // Show the modal
+                const modal = new bootstrap.Modal(document.getElementById('deleteConfirmationModal'));
+                modal.show();
+
+                // Handle delete confirmation
+                document.getElementById('confirmDeleteButton').addEventListener('click', async () => {
+                    try {
+                        const response = await fetch(`/api/recording/${filename}`, {
+                            method: 'DELETE',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            }
+                        });
+
+                        if (response.ok) {
+                            const result = await response.json();
+                            this.showNotification(`Recording "${filename}" deleted successfully`, 'success');
+
+                            // Remove the row from the table
+                            const row = document.querySelector(`tr[data-filename="${filename}"]`);
+                            if (row) {
+                                row.remove();
+
+                                // Update the count
+                                const countElement = document.querySelector('#recordingsList .text-center small');
+                                if (countElement) {
+                                    const remainingRows = document.querySelectorAll('#recordingsList tbody tr').length;
+                                    countElement.textContent = `Total recordings: ${remainingRows}`;
+
+                                    // If no recordings left, show empty message
+                                    if (remainingRows === 0) {
+                                        document.getElementById('recordingsList').innerHTML = '<div class="text-center text-muted"><i class="fas fa-video-slash fa-3x mb-3"></i><br>No recordings found</div>';
+                                    }
+                                }
+                            }
+                        } else {
+                            const error = await response.json();
+                            throw new Error(error.detail || 'Failed to delete recording');
+                        }
+                    } catch (error) {
+                        console.error('Delete error:', error);
+                        this.showNotification(`Failed to delete recording: ${error.message}`, 'error');
+                    } finally {
+                        modal.hide();
+                    }
+                });
+            }
+
+            generateRecordingsTable(recordings) {
+                return `
+                    <div class="recordings-content">
+                        <table class="table recordings-table">
+                            <thead>
+                                <tr>
+                                    <th><i class="fas fa-image"></i> Preview</th>
+                                    <th><i class="fas fa-file-video"></i> File</th>
+                                    <th><i class="fas fa-hdd"></i> Size</th>
+                                    <th><i class="fas fa-calendar"></i> Date</th>
+                                    <th><i class="fas fa-camera"></i> Camera</th>
+                                    <th><i class="fas fa-clock"></i> Duration</th>
+                                    <th><i class="fas fa-cog"></i> Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${recordings.map(rec => `
+                                    <tr data-filename="${rec.filename}" data-camera="${rec.camera}" data-date="${rec.created}">
+                                        <td>
+                                            <img src="${rec.thumbnail}" 
+                                                 alt="Recording thumbnail" 
+                                                 class="recording-thumbnail" 
+                                                 onclick="playVideo('${rec.filename}')"
+                                                 title="Click to play video" />
+                                        </td>
+                                        <td>
+                                            <div class="recording-filename" onclick="playVideo('${rec.filename}')" title="Click to play">
+                                                ${rec.filename}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span class="recording-badge size-badge">${this.formatFileSize(rec.size)}</span>
+                                        </td>
+                                        <td>
+                                            <div style="font-size: 0.875rem; color: var(--text-secondary);">
+                                                ${new Date(rec.created).toLocaleString()}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span class="recording-badge camera-badge">${rec.camera.toUpperCase()}</span>
+                                        </td>
+                                        <td>
+                                            <span class="recording-badge duration-badge">${rec.duration}</span>
+                                        </td>
+                                        <td>
+                                            <div class="recording-actions">
+                                                <button class="action-btn download" onclick="downloadRecording('${rec.filename}')" title="Download">
+                                                    <i class="fas fa-download"></i>
+                                                </button>
+                                                <button class="action-btn info" onclick="getRecordingInfo('${rec.filename}')" title="Information">
+                                                    <i class="fas fa-info-circle"></i>
+                                                </button>
+                                                <button class="action-btn delete" onclick="deleteRecording('${rec.filename}')" title="Delete">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="recordings-footer">
+                        <div class="recordings-count">
+                            <i class="fas fa-video"></i> Total recordings: ${recordings.length}
+                        </div>
+                    </div>
+                `;
+            }
+
+            setupRecordingSearch() {
+                const searchInput = document.getElementById('searchRecordings');
+                const cameraFilter = document.getElementById('cameraFilter');
+                const dateFilter = document.getElementById('dateFilter');
+
+                const filterRecordings = () => {
+                    const searchTerm = searchInput.value.toLowerCase();
+                    const selectedCamera = cameraFilter.value;
+                    const selectedDate = dateFilter.value;
+
+                    const rows = document.querySelectorAll('#recordingsList tbody tr');
+                    let visibleCount = 0;
+                    
+                    rows.forEach(row => {
+                        const filename = row.dataset.filename.toLowerCase();
+                        const camera = row.dataset.camera;
+                        const dateStr = row.dataset.date;
+
+                        let show = true;
+
+                        if (searchTerm && !filename.includes(searchTerm)) {
+                            show = false;
+                        }
+
+                        if (selectedCamera && camera !== selectedCamera) {
+                            show = false;
+                        }
+
+                        if (selectedDate) {
+                            const recordingDate = new Date(dateStr).toISOString().split('T')[0];
+                            if (recordingDate !== selectedDate) {
+                                show = false;
+                            }
+                        }
+
+                        row.style.display = show ? '' : 'none';
+                        if (show) visibleCount++;
+                    });
+
+                    // Update visible count
+                    const countElement = document.querySelector('#recordingsList .text-center small');
+                    if (countElement) {
+                        countElement.textContent = `Showing ${visibleCount} recordings`;
+                    }
+                };
+
+                searchInput.addEventListener('input', filterRecordings);
+                cameraFilter.addEventListener('change', filterRecordings);
+                dateFilter.addEventListener('change', filterRecordings);
+            }
+
+            async playVideo(filename) {
+                this.currentVideo = filename;
+                const player = document.getElementById('recordingPlayer');
+                const title = document.getElementById('videoPlayerTitle');
+                
+                // Clear any previous source
+                player.src = '';
+                player.load();
+                
+                // Set new source
+                const videoUrl = `/recordings/${filename}`;
+                player.src = videoUrl;
+                title.innerHTML = `<i class="fas fa-play"></i> Playing: ${filename}`;
+                
+                // Add video event listeners
+                player.onloadstart = () => {
+                    console.log('Video loading started...');
+                };
+                
+                player.oncanplay = () => {
+                    console.log('Video ready to play');
+                };
+                
+                player.onerror = (e) => {
+                    console.error('Video error:', e);
+                    this.showNotification('Error loading video file. Please check if the file exists or is supported.', 'error');
+                };
+                
+                // Show modal
+                const modal = new bootstrap.Modal(document.getElementById('videoPlayerModal'));
+                modal.show();
+                
+                // Load video when modal is shown
+                modal._element.addEventListener('shown.bs.modal', () => {
+                    player.load();
+                    setTimeout(() => {
+                        player.play().catch(err => {
+                            console.log('Auto-play prevented by browser:', err);
+                            this.showNotification('Click play button to start video.', 'info');
+                        });
+                    }, 500);
+                }, { once: true });
+            }
+
+            downloadRecording(filename) {
+                try {
+                    const link = document.createElement('a');
+                    link.href = `/recordings/${filename}`;
+                    link.download = filename;
+                    link.target = '_blank';
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    this.showNotification(`Downloading ${filename}`, 'success');
+                } catch (error) {
+                    console.error('Download error:', error);
+                    this.showNotification('Download failed', 'error');
+                }
+            }
+
+            shareRecording(filename) {
+                const shareUrl = `${window.location.origin}/recordings/${filename}`;
+                
+                if (navigator.share) {
+                    navigator.share({
+                        title: 'CCTV Recording',
+                        text: `Security camera recording: ${filename}`,
+                        url: shareUrl
+                    }).then(() => {
+                        this.showNotification('Recording shared successfully', 'success');
+                    });
+                } else {
+                    navigator.clipboard.writeText(shareUrl).then(() => {
+                        this.showNotification('Recording link copied to clipboard', 'success');
+                    }).catch(() => {
+                        // Fallback: show the URL in a prompt
+                        prompt('Copy this link to share the recording:', shareUrl);
+                    });
+                }
+            }
+
+            async getRecordingInfo(filename) {
+                try {
+                    // Find recording in current list
+                    const recordings = await fetch('/api/recordings').then(r => r.json());
+                    const recording = recordings.find(r => r.filename === filename);
+                    
+                    if (recording) {
+                        const infoHtml = `
+                            <div class="recording-info">
+                                <table class="table table-dark table-sm">
+                                    <tr><td><strong>Filename:</strong></td><td>${recording.filename}</td></tr>
+                                    <tr><td><strong>Camera:</strong></td><td>${recording.camera.toUpperCase()}</td></tr>
+                                    <tr><td><strong>Size:</strong></td><td>${this.formatFileSize(recording.size)}</td></tr>
+                                    <tr><td><strong>Duration:</strong></td><td>${recording.duration}</td></tr>
+                                    <tr><td><strong>Created:</strong></td><td>${new Date(recording.created).toLocaleString()}</td></tr>
+                                    
+                                </table>
+                                <div class="text-center mt-3">
+                                    
+                                    <button class="btn btn-success" onclick="cctvManager.downloadRecording('${filename}')">
+                                        <i class="fas fa-download"></i> Download
+                                    </button>
+                                </div>
+                            </div>
+                        `;
+                        
+                        this.showInfoModal('Recording Information', infoHtml);
+                    }
+                } catch (error) {
+                    this.showNotification('Failed to get recording info', 'error');
+                }
+            }
+
+            showInfoModal(title, content) {
+                const modalHtml = `
+                    <div class="modal fade modal-dark" id="infoModal" tabindex="-1">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">${title}</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                </div>
+                                <div class="modal-body">
+                                    ${content}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                // Remove existing modal
+                const existing = document.getElementById('infoModal');
+                if (existing) existing.remove();
+                
+                // Add new modal
+                document.body.insertAdjacentHTML('beforeend', modalHtml);
+                const modal = new bootstrap.Modal(document.getElementById('infoModal'));
+                modal.show();
+                
+                // Clean up when closed
+                modal._element.addEventListener('hidden.bs.modal', () => {
+                    document.getElementById('infoModal').remove();
+                });
+            }
+
+            formatFileSize(bytes) {
+                if (bytes === 0) return '0 Bytes';
+                const k = 1024;
+                const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+                const i = Math.floor(Math.log(bytes) / Math.log(k));
+                return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+            }
+
+            showNotification(message, type = 'success') {
+                // Remove any existing notifications first
+                const existingNotifications = document.querySelectorAll('.notification-alert');
+                existingNotifications.forEach(notification => {
+                    if (notification.parentNode) {
+                        notification.parentNode.removeChild(notification);
+                    }
+                });
+
+                // Create notification element
+                const notification = document.createElement('div');
+                notification.className = `alert alert-${type === 'success' ? 'success' : 'danger'} alert-dismissible fade show position-fixed notification-alert`;
+                notification.style.cssText = 'top: 80px; right: 20px; z-index: 9999; min-width: 350px; max-width: 500px;';
+                notification.innerHTML = `
+                    <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-triangle'}"></i>
+                    <strong>${type === 'success' ? 'Success!' : 'Error!'}</strong> ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                `;
+                
+                               
+                document.body.appendChild(notification);
+                
+                // Auto-remove after 5 seconds
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.classList.remove('show');
+                        setTimeout(() => {
+                            if (notification.parentNode) {
+                                notification.parentNode.removeChild(notification);
+                            }
+                        }, 300);
+                    }
+                }, 5000);
+            }
+
+            // ...existing code...
+        }
+
+        // Initialize the CCTV Manager
+        const cctvManager = new CCTVManager();
+
+        // Global functions for buttons
+        function toggleRecording(camera) { cctvManager.toggleRecording(camera); }
+        function refreshCamera(camera) { cctvManager.refreshCamera(camera); }
+        function fullscreenCamera(camera) { cctvManager.fullscreenCamera(camera); }
+        function toggleAllRecording() { cctvManager.toggleAllRecording(); }
+        function refreshAllCameras() { cctvManager.refreshAllCameras(); }
+        function showRecordings() { cctvManager.showRecordings(); }
+        function toggleFullscreen() { cctvManager.toggleFullscreen(); }
+        function deleteRecording(filename) { 
+            cctvManager.deleteRecording(filename); 
+        }
+
+        // Enhanced video player functions
+        function playVideo(filename) { cctvManager.playVideo(filename); }
+        function downloadRecording(filename) { cctvManager.downloadRecording(filename); }
+        function shareRecording(filename) { cctvManager.shareRecording(filename); }
+        function getRecordingInfo(filename) { cctvManager.getRecordingInfo(filename); }
+
+        function playbackSpeed(speed) {
+            const player = document.getElementById('recordingPlayer');
+            if (player) {
+                player.playbackRate = speed;
+                cctvManager.showNotification(`Playback speed: ${speed}x`, 'success');
+            }
+        }
+
+        function skipVideo(seconds) {
+            const player = document.getElementById('recordingPlayer');
+            if (player) {
+                player.currentTime += seconds;
+            }
+        }
+
+        function downloadCurrentVideo() {
+            if (cctvManager.currentVideo) {
+                cctvManager.downloadRecording(cctvManager.currentVideo);
+            }
+        }
+
+        function shareVideo() {
+            if (cctvManager.currentVideo) {
+                cctvManager.shareRecording(cctvManager.currentVideo);
+            }
+        }
+
+        function togglePictureInPicture() {
+            const player = document.getElementById('recordingPlayer');
+            if (document.pictureInPictureElement) {
+                document.exitPictureInPicture();
+            } else if (document.pictureInPictureEnabled) {
+                player.requestPictureInPicture().catch(error => {
+                    cctvManager.showNotification('Picture-in-Picture not supported', 'error');
+                });
+            }
+        }
+
+        function filterRecordings(period) {
+            const now = new Date();
+            let startDate;
+
+            switch(period) {
+                case 'today':
+                    startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+                    break;
+                case 'week':
+                    startDate = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+                    break;
+                case 'month':
+                    startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+                    break;
+                default:
+                    startDate = null;
+            }
+
+            const rows = document.querySelectorAll('#recordingsList tbody tr');
+            let visibleCount = 0;
+            
+            rows.forEach(row => {
+                if (!startDate) {
+                    row.style.display = '';
+                    visibleCount++;
+                    return;
+                }
+
+                const recordingDate = new Date(row.dataset.date);
+                if (recordingDate >= startDate) {
+                    row.style.display = '';
+                    visibleCount++;
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+
+            // Update count
+            const countElement = document.querySelector('#recordingsList .text-center small');
+            if (countElement) {
+                countElement.textContent = `Showing ${visibleCount} recordings`;
+            }
+
+            cctvManager.showNotification(`Filtered to show ${period} recordings`, 'success');
+        }
+
+        // Handle fullscreen changes
+        document.addEventListener('fullscreenchange', () => {
+            const buttons = document.querySelectorAll('.btn-modern:nth-child(3)');
+            buttons.forEach(button => {
+                if (document.fullscreenElement) {
+                    button.innerHTML = '<i class="fas fa-compress"></i> Exit';
+                } else {
+                    button.innerHTML = '<i class="fas fa-expand"></i> Fullscreen';
+                }
+            });
+        });
+
+        // Remove debugging code
+        window.testRecordingAPI = async function(camera, action) {
+            try {
+                const response = await fetch(`/api/recording/${camera}/${action}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+                return await response.json();
+            } catch (error) {
+                console.error('API test error:', error);
+                return error;
+            }
+        };
+
+        let cameraToRemove = null;
+
+        function showAddCameraModal() {
+            const modal = new bootstrap.Modal(document.getElementById('addCameraModal'));
+            modal.show();
+            
+            // Clear form
+            document.getElementById('addCameraForm').reset();
+        }
+
+        async function addCamera() {
+            const name = document.getElementById('cameraName').value.trim();
+            const url = document.getElementById('cameraUrl').value.trim();
+            const button = document.querySelector('#addCameraModal .btn-success');
+
+            if (!name || !url) {
+                cctvManager.showNotification('Please fill in all fields', 'error');
+                return;
+            }
+
+            // Validate camera name length
+            if (name.length < 2) {
+                cctvManager.showNotification('Camera name must be at least 2 characters long', 'error');
+                return;
+            }
+
+            if (name.length > 50) {
+                cctvManager.showNotification('Camera name must be less than 50 characters', 'error');
+                return;
+            }
+
+            // Check for special characters
+            const nameRegex = /^[a-zA-Z0-9\s\-_]+$/;
+            if (!nameRegex.test(name)) {
+                cctvManager.showNotification('Camera name can only contain letters, numbers, spaces, hyphens, and underscores', 'error');
+                return;
+            }
+
+            // Validate URL format
+            if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                cctvManager.showNotification('URL must start with http:// or https://', 'error');
+                return;
+            }
+
+            try {
+                button.disabled = true;
+                button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Adding...';
+
+                const response = await fetch('/api/camera/add', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, url })
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    cctvManager.showNotification(result.message, 'success');
+                    
+                    // Close modal
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('addCameraModal'));
+                    modal.hide();
+                    
+                    // Add camera to DOM immediately without page reload
+                    addCameraToDOM(name, url);
+                    
+                    // Update total cameras count
+                    const totalCamerasEl = document.getElementById('totalCameras');
+                    if (totalCamerasEl) {
+                        const currentCount = parseInt(totalCamerasEl.textContent) || 0;
+                        totalCamerasEl.textContent = currentCount + 1;
+                    }
+                    
+                    // Remove "no cameras" message if it exists
+                    const noCamerasMessage = document.getElementById('noCamerasMessage');
+                    if (noCamerasMessage) {
+                        noCamerasMessage.remove();
+                    }
+                } else {
+                    const error = await response.json();
+                    throw new Error(error.detail || 'Failed to add camera');
+                }
+            } catch (error) {
+                console.error('Add camera error:', error);
+                cctvManager.showNotification(`Failed to add camera: ${error.message}`, 'error');
+            } finally {
+                button.disabled = false;
+                button.innerHTML = '<i class="fas fa-plus"></i> Add Camera';
+            }
+        }
+
+        function addCameraToDOM(name, url) {
+            const cameraGrid = document.getElementById('cameraGrid');
+            const cameraCard = document.createElement('div');
+            cameraCard.className = 'camera-card';
+            cameraCard.id = `camera-${name}`;
+            cameraCard.innerHTML = `
+                <div class="camera-header">
+                    <h4 class="camera-title">
+                        <i class="fas fa-video"></i> ${name.charAt(0).toUpperCase() + name.slice(1)}
+                    </h4>
+                    <div class="camera-status">
+                        <span class="status-badge status-offline" id="status-${name}">
+                            <i class="fas fa-circle"></i> Offline
+                        </span>
+                        <button class="btn btn-sm btn-outline-danger ms-2" onclick="confirmRemoveCamera('${name}')" title="Remove Camera">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="camera-feed-container">
+                    <img src="/video_feed/${name}" alt="${name} feed" class="camera-feed" 
+                         onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjMWUyOTNiIi8+Cjx0ZXh0IHg9IjIwMCIgeT0iMTMwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjZWY0NDQ0IiBmb250LXNpemU9IjE4IiBmb250LWZhbWlseT0iSW50ZXIiIGZvbnQtd2VpZ2h0PSI2MDAiPkNhbWVyYSBPZmZsaW5lPC90ZXh0Pjx0ZXh0IHg9IjIwMCIgeT0iMTcwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjOTRhM2I4IiBmb250LXNpemU9IjEyIiBmb250LWZhbWlseT0iSW50ZXIiPkNoZWNrIGNvbm5lY3Rpb24gYW5kIHJlZnJlc2g8L3RleHQ+PC9zdmc+'" />
+                    
+                    <div class="camera-overlay">
+                        <div class="overlay-item timestamp" id="timestamp-${name}">
+                            <i class="fas fa-clock"></i> <span id="time-${name}">--:--:--</span>
+                        </div>
+                        <div>
+                            <div class="overlay-item recording-indicator" id="recording-${name}" style="display: none;">
+                                <i class="fas fa-circle"></i> REC
+                            </div>
+                            <div class="overlay-item motion-alert" id="motion-${name}" style="display: none;">
+                                <i class="fas fa-exclamation-triangle"></i> MOTION
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="camera-controls">
+                    <div class="btn-group">
+                        <button class="btn-modern" onclick="toggleRecording('${name}')">
+                            <i class="fas fa-record-vinyl"></i> Record
+                        </button>
+                        <button class="btn-modern" onclick="refreshCamera('${name}')">
+                            <i class="fas fa-sync-alt"></i> Refresh
+                        </button>
+                        <button class="btn-modern" onclick="fullscreenCamera('${name}')">
+                            <i class="fas fa-expand"></i> Fullscreen
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            cameraGrid.appendChild(cameraCard);
+        }
+
+        function confirmRemoveCamera(cameraName) {
+            cameraToRemove = cameraName;
+            document.getElementById('cameraToRemove').textContent = cameraName;
+            const modal = new bootstrap.Modal(document.getElementById('confirmRemoveModal'));
+            modal.show();
+        }
+
+        async function executeRemoveCamera() {
+            if (!cameraToRemove) return;
+
+            const button = document.querySelector('#confirmRemoveModal .btn-danger');
+
+            try {
+                button.disabled = true;
+                button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Removing...';
+
+                const response = await fetch(`/api/camera/${cameraToRemove}`, { 
+                    method: 'DELETE',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    cctvManager.showNotification(result.message, 'success');
+                    
+                    // Close modal
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('confirmRemoveModal'));
+                    modal.hide();
+                    
+                    // Remove camera card from DOM immediately
+                    const cameraCard = document.getElementById(`camera-${cameraToRemove}`);
+                    if (cameraCard) {
+                        cameraCard.remove();
+                    }
+                    
+                    // Update total cameras count
+                    const totalCamerasEl = document.getElementById('totalCameras');
+                    if (totalCamerasEl) {
+                        const currentCount = parseInt(totalCamerasEl.textContent) || 0;
+                        totalCamerasEl.textContent = Math.max(0, currentCount - 1);
+                    }
+                    
+                    // Check if no cameras left and show message
+                    const remainingCameras = document.querySelectorAll('.camera-card');
+                    if (remainingCameras.length === 0) {
+                        document.getElementById('cameraGrid').innerHTML = `
+                            <div class="col-12 text-center" id="noCamerasMessage">
+                                <div class="alert alert-warning">
+                                    <i class="fas fa-exclamation-triangle"></i> No cameras configured
+                                    <br>
+                                    <button class="btn btn-modern mt-2" onclick="showAddCameraModal()">
+                                        <i class="fas fa-plus"></i> Add Your First Camera
+                                    </button>
+                                </div>
+                            </div>
+                        `;
+                    }
+                } else {
+                    const error = await response.json();
+                    throw new Error(error.detail || 'Failed to remove camera');
+                }
+            } catch (error) {
+                console.error('Remove camera error:', error);
+                cctvManager.showNotification(`Failed to remove camera: ${error.message}`, 'error');
+            } finally {
+                button.disabled = false;
+                button.innerHTML = '<i class="fas fa-trash"></i> Remove Camera';
+                cameraToRemove = null;
+            }
+        }
+
+        function setActiveFilter(button) {
+            // Remove active class from all filter buttons
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            // Add active class to clicked button
+            button.classList.add('active');
+        }
+    </script>
+</body>
+</html>
+
