@@ -1,15 +1,14 @@
 # CCTV Monitoring System
 
-A web-based CCTV monitoring system built with FastAPI and OpenCV, allowing users to view, record, and analyze video feeds from connected cameras.
+A web-based CCTV monitoring system built with FastAPI and OpenCV, allowing users to view and record from connected cameras.
 
 ## Features
 
 - Real-time video streaming through web interface
-- Video recording and playback capabilities
+- Video recording
 - Motion detection alerts
 - User-friendly web dashboard
-- Camera management and configuration
-- Video analysis using OpenCV
+- Camera management(Add/Remove)
 
 ## Technology Stack
 
@@ -48,26 +47,6 @@ http://localhost:8000
 ```
 
 3. Use the web interface to view camera feeds and manage settings.
-
-## Configuration
-
-Edit the `config.json` file to set up your cameras and application preferences:
-
-```json
-{
-  "cameras": [
-    {
-      "name": "Camera 1",
-      "url": "rtsp://camera-ip:port/stream",
-      "enabled": true
-    }
-  ],
-  "settings": {
-    "recording_path": "recordings/",
-    "motion_detection": true
-  }
-}
-```
 
 ## Development
 
